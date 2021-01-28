@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rxui:ReactiveContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestDynamicsData.Pages.MainPage"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
+             ios:Page.UseSafeArea="true"
+             xmlns:rxui="clr-namespace:ReactiveUI.XamForms;assembly=ReactiveUI.XamForms"
+             xmlns:vm="clr-namespace:TestDynamicsData.ViewModels"          
+             x:TypeArguments="vm:MainPageViewModel" BackgroundColor="#2196F3">
+
+    <Grid Padding="16,8" RowDefinitions="auto,*" RowSpacing="16">
+        <Frame Grid.Row="0" CornerRadius="20">
+            <Grid ColumnDefinitions="*,auto">
+                <Label Text="Show sold out items" FontSize="26"/>
+                <Switch Grid.Column="1" HorizontalOptions="End" x:Name="isSoldOutSwitch"/>
+            </Grid>
+        </Frame>
+        <Frame Grid.Row="1" CornerRadius="20" >
+            <CollectionView x:Name="gpuCollectionview" IsGrouped="True" >
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Frame Padding="8,4" BackgroundColor="#333" HasShadow="False">
+                            <Label Text="{Binding Key}" TextColor="White" FontSize="20"/>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,8"  ColumnDefinitions="*,8,auto">
+                            <StackLayout>
+                                <Label Text="{Binding Name}"/>
+                                <Label Text="{Binding Price,StringFormat='{0}$'}" FontAttributes="bold"/>
+                            </StackLayout>
+                            <Label Grid.Column="2" 
+                                   HorizontalOptions="End" 
+                                   Text="Sold out" 
+                                   FontAttributes="bold" 
+                                   TextColor="Red" 
+                                   IsVisible="{Binding IsSoldOut}"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
+    </Grid>
+
+</rxui:ReactiveContentPage>
