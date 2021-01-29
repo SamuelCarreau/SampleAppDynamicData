@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<rxui:ReactiveContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<rxuiforms:ReactiveContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TestDynamicsData.Pages.MainPage"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core" 
              ios:Page.UseSafeArea="true"
-             xmlns:rxui="clr-namespace:ReactiveUI.XamForms;assembly=ReactiveUI.XamForms"
+                          xmlns:rxui="clr-namespace:ReactiveUI;assembly=ReactiveUI"
+             xmlns:rxuiforms="clr-namespace:ReactiveUI.XamForms;assembly=ReactiveUI.XamForms"
              xmlns:vm="clr-namespace:TestDynamicsData.ViewModels"          
              x:TypeArguments="vm:MainPageViewModel" BackgroundColor="#2196F3">
 
@@ -17,6 +18,11 @@
         </Frame>
         <Frame Grid.Row="1" CornerRadius="20" >
             <CollectionView x:Name="gpuCollectionview" IsGrouped="True" >
+                <CollectionView.EmptyViewTemplate>
+                    <DataTemplate>
+                        <Label Text="Nothing here" FontSize="20"/>
+                    </DataTemplate>
+                </CollectionView.EmptyViewTemplate>
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate>
                         <Frame Padding="8,4" BackgroundColor="#333" HasShadow="False">
@@ -44,4 +50,4 @@
         </Frame>
     </Grid>
 
-</rxui:ReactiveContentPage>
+</rxuiforms:ReactiveContentPage>

@@ -10,14 +10,19 @@ using TestDynamicsData.Helpers;
 
 namespace TestDynamicsData.ViewModels
 {
-    public class MainPageViewModel : ReactiveObject , IDisposable
+    public class MainPageViewModel : ReactiveObject, IDisposable
     {
         private readonly SourceCache<GPU, Guid> source;
-        private CompositeDisposable cleanUp;
+        private readonly CompositeDisposable cleanUp;
+        private IDisposable loader;
 
-        private readonly ReadOnlyObservableCollection<Grouping<GPU,Guid,Manifacturer>> gpus;
+        private ReadOnlyObservableCollection<Grouping<GPU, Guid, Manifacturer>> gpus;
 
-        public ReadOnlyObservableCollection<Grouping<GPU, Guid, Manifacturer>> Gpus => gpus;
+        public ReadOnlyObservableCollection<Grouping<GPU, Guid, Manifacturer>> Gpus
+        {
+            get { return gpus; }
+            set { this.RaiseAndSetIfChanged(ref gpus, value); }
+        }
 
         private bool showSoldout = true;
         public bool ShowSoldout
@@ -28,6 +33,8 @@ namespace TestDynamicsData.ViewModels
 
         public MainPageViewModel()
         {
+            cleanUp = new CompositeDisposable();
+
             source = new SourceCache<GPU, Guid>(t => t.Id);
             source.AddOrUpdate(new List<GPU>
             {
@@ -43,19 +50,27 @@ namespace TestDynamicsData.ViewModels
             .WhenAnyValue(x => x.ShowSoldout)
             .Select(BuildSoldOutFilter);
 
-            var loader = source
-                .Connect()
-                .Filter(soldOutFilter)
-                .GroupOnProperty(x => x.Manifacturer)
-                .Transform(group => new Grouping<GPU, Guid, Manifacturer>(group))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Bind(out gpus)
-                .Subscribe(new DebugObserver<IChangeSet<Grouping<GPU, Guid, Manifacturer>,Manifacturer>>("loader"));
-
-            cleanUp = new CompositeDisposable(loader);
+            var filterSubcription = soldOutFilter
+                .Do(_ =>
+                {
+                    Gpus = null;
+                    loader?.Dispose();
+                    loader = source
+                    .Connect()
+                    .Filter(soldOutFilter)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .GroupOnProperty(x => x.Manifacturer)
+                    .Transform(group => new Grouping<GPU, Guid, Manifacturer>(group))
+                    .Bind(out gpus)
+                    .Do(group => this.RaisePropertyChanged(nameof(Gpus)))
+                    .Subscribe(new DebugObserver<IChangeSet<Grouping<GPU, Guid, Manifacturer>, Manifacturer>>("loader"))
+                    .DisposeWith(cleanUp);
+                })
+                .Subscribe()
+                .DisposeWith(cleanUp);   
         }
 
-        private Func<GPU,bool> BuildSoldOutFilter(bool showSoldOut)
+        private Func<GPU, bool> BuildSoldOutFilter(bool showSoldOut)
         {
             return gpu => !gpu.IsSoldOut || gpu.IsSoldOut && showSoldOut;
         }
@@ -64,5 +79,6 @@ namespace TestDynamicsData.ViewModels
         {
             cleanUp.Dispose();
         }
+
     }
 }

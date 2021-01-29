@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDynamicsData.Android", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDynamicsData.iOS", "TestDynamicsData\TestDynamicsData.iOS\TestDynamicsData.iOS.csproj", "{EA8D2E2C-35E1-4284-A83B-40B5FEA84BE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDynamicsData", "TestDynamicsData\TestDynamicsData\TestDynamicsData.csproj", "{E2F0C4E5-4871-4876-8267-CF7E22932775}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDynamicsData", "TestDynamicsData\TestDynamicsData\TestDynamicsData.csproj", "{E2F0C4E5-4871-4876-8267-CF7E22932775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

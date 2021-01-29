@@ -10,6 +10,8 @@ using Xamarin.Forms;
 using ReactiveUI.XamForms;
 using TestDynamicsData.ViewModels;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using TestDynamicsData.Helpers;
 
 namespace TestDynamicsData.Pages
 {
@@ -28,6 +30,8 @@ namespace TestDynamicsData.Pages
                 this.Bind(ViewModel, vm => vm.ShowSoldout, view => view.isSoldOutSwitch.IsToggled)
                 .DisposeWith(viewDisposable);
             });
+
+
         }
     }
 }

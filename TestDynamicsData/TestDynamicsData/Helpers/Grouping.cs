@@ -13,7 +13,7 @@ namespace TestDynamicsData.Helpers
     //https://stackoverflow.com/questions/52094572/dynamicdata-how-to-bind-to-grouped-data
     public class Grouping<TElement,TKey, TGroupKey> : ObservableCollectionExtended<TElement>, IGrouping<TGroupKey, TElement> , IDisposable
     {
-        readonly IDisposable subscription;
+        private readonly IDisposable cleanUp;
         public TGroupKey Key { get; private set; }
         public Grouping(IGroup<TElement,TKey, TGroupKey> group)
         {
@@ -24,7 +24,7 @@ namespace TestDynamicsData.Helpers
             }
 
             Key = group.Key;
-            subscription = group
+            cleanUp = group
                 .Cache
                 .Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -41,7 +41,7 @@ namespace TestDynamicsData.Helpers
             }
 
             Key = group.Key;
-            subscription = group
+            cleanUp = group
                 .Cache
                 .Connect()
                 .Filter(filter)
@@ -53,14 +53,14 @@ namespace TestDynamicsData.Helpers
 
         public Grouping(IGroup<TElement, TKey, TGroupKey> group, SortExpressionComparer<TElement> comparer)
         {
-
+            
             if (group == null)
             {
                 throw new ArgumentNullException(nameof(group));
             }
 
             Key = group.Key;
-            subscription = group
+            cleanUp = group
                 .Cache
                 .Connect()
                 .Sort(comparer)
@@ -79,7 +79,7 @@ namespace TestDynamicsData.Helpers
             }
 
             Key = group.Key;
-            subscription = group
+            cleanUp = group
                 .Cache
                 .Connect()
                 .Filter(filter)
@@ -92,7 +92,7 @@ namespace TestDynamicsData.Helpers
 
         public void Dispose()
         {
-            subscription?.Dispose();
+            cleanUp?.Dispose();
         }
     }   
 }
